@@ -5,6 +5,7 @@ import 'rc-slider/assets/index.css'
 
 import { PlayerContext } from "../../contexts/PlayerContext";
 import styles from "./styles.module.scss";
+import { convertDurationToTimeString } from "../../utils/convertDurationToTimeString";
 
 export function Player() {
 
@@ -14,7 +15,11 @@ export function Player() {
 		episodeList,
 		currentEpisodeIndex,
 		isPlaying,
+		isLooping,
+		isSuffle,
 		togglePlay,
+		toggleSuffle,
+		toggleLooping,
 		setPlayingState,
 		playNext,
 		playPrevious,
@@ -77,13 +82,14 @@ export function Player() {
 						<div className={styles.emptySlider} />
 					)}
 				</div>
-				<span>00:00</span>
+				<span>{convertDurationToTimeString(episode?.duration ?? 0)}</span>
 			</div>
 
 			{ episode && (
 				<audio
 					src={episode.url}
 					ref={audioRef}
+					loop={isLooping}
 					onPlay={() => setPlayingState(true)}
 					onPause={() => setPlayingState(false)}
 					autoPlay
@@ -91,8 +97,13 @@ export function Player() {
 			)}
 
 			<div className={styles.buttons}>
-				<button type="button" disabled={!episode}>
-						<img src="/shuffle.svg" alt="Aleatório"/>
+				<button
+					type="button"
+					disabled={!episode || episodeList.length == 1}
+					onClick={toggleSuffle}
+					className={isSuffle ? styles.isActive : ''}
+				>
+					<img src="/shuffle.svg" alt="Aleatório"/>
 				</button>
 				<button type="button" disabled={!episode || !hasPrevious} onClick={playPrevious}>
 					<img src="/play-previous.svg" alt="Tocar anterior"/>
@@ -107,7 +118,12 @@ export function Player() {
 				<button type="button" disabled={!episode || !hasNext} onClick={playNext}>
 					<img src="/play-next.svg" alt="Tocar próximo"/>
 				</button>
-				<button type="button" disabled={!episode} >
+				<button
+					type="button"
+					disabled={!episode}
+					onClick={toggleLooping}
+					className={isLooping ? styles.isActive : ''}
+				>
 					<img src="/repeat.svg" alt="Repetir"/>
 				</button>
 			</div>
