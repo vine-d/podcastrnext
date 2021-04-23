@@ -17,13 +17,21 @@ export function Player() {
 		togglePlay,
 		setPlayingState,
 		playNext,
-		playPrevious
+		playPrevious,
+		hasNext,
+		hasPrevious
 	} = useContext(PlayerContext)
 
 	useEffect(() => {
-		if (!audioRef.current) {return}
-		if (isPlaying) {audioRef.current.play()}
-		else {audioRef.current.pause()}
+		if (!audioRef.current) {
+			return
+		}
+
+		if (isPlaying) {
+			audioRef.current.play()
+		}	else {
+			audioRef.current.pause()
+		}
 	}, [isPlaying])
 
 	const episode = episodeList[currentEpisodeIndex]
@@ -84,23 +92,23 @@ export function Player() {
 
 			<div className={styles.buttons}>
 				<button type="button" disabled={!episode}>
-						<img src="./shuffle.svg" alt="Aleatório"/>
+						<img src="/shuffle.svg" alt="Aleatório"/>
 				</button>
-				<button type="button" disabled={!episode} onClick={playPrevious}>
-					<img src="./play-previous.svg" alt="Tocar anterior"/>
+				<button type="button" disabled={!episode || !hasPrevious} onClick={playPrevious}>
+					<img src="/play-previous.svg" alt="Tocar anterior"/>
 				</button>
 				<button type="button" className={styles.playButton} disabled={!episode} onClick={togglePlay}>
 					{isPlaying? (
-						<img src="./pause.svg" alt="Pause"/>
+						<img src="/pause.svg" alt="Pause"/>
 					) : (
-						<img src="./play.svg" alt="Tocar"/>
+						<img src="/play.svg" alt="Tocar"/>
 					)}
 				</button>
-				<button type="button" disabled={!episode} onClick={playNext}>
-					<img src="./play-next.svg" alt="Tocar próximo"/>
+				<button type="button" disabled={!episode || !hasNext} onClick={playNext}>
+					<img src="/play-next.svg" alt="Tocar próximo"/>
 				</button>
 				<button type="button" disabled={!episode} >
-					<img src="./repeat.svg" alt="Repetir"/>
+					<img src="/repeat.svg" alt="Repetir"/>
 				</button>
 			</div>
 
